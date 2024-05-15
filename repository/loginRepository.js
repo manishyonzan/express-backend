@@ -6,8 +6,15 @@ const AppError = require("../utils/appError");
 
 class LoginRepository {
     async getLogin() {
-        const response = await pool.query('select * FROM tablename');
-        return response[0];
+        try {
+            const response = await pool.query('select * FROM tablename');
+            return response[0];
+
+        } catch (error) {
+            const err = new AppError("Something Went wrong", 401);
+            throw err
+
+        }
     };
     async createLogin(logindata) {
 

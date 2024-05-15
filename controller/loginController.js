@@ -11,9 +11,8 @@ const loginController = {
             res.status(200).send(response);
 
         } catch (error) {
-            res.status(500).send({
-                message: "Something went wrong",
-                error: "internal server error",
+            res.status(error.statusCode).send({
+                message: error.message,
             })
 
         }
@@ -27,13 +26,11 @@ const loginController = {
 
             }
             const returnResponse = await loginRepository.createLogin(response.data);
-            res.status(returnResponse.affectedRows > 0 ? 200 : 500)
-                .json(returnResponse.affectedRows > 0 ? {
+
+            res.status(200)
+                .json({
                     message: "Login created successfully",
                     success: returnResponse.affectedRows > 0
-                } : {
-                    message: "internal server error",
-                    success: false
                 });
 
         } catch (error) {
