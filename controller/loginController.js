@@ -8,7 +8,9 @@ const loginController = {
     getLogin: async (req, res) => {
         try {
             const response = await loginRepository.getLogin();
-            res.status(200).send(response);
+            if (response) {
+                res.status(200).send(response);
+            }
 
         } catch (error) {
             res.status(error.statusCode).send({
