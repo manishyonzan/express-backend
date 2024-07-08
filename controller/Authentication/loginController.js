@@ -1,7 +1,7 @@
-const loginRepository = require("../repository/loginRepository");
-const { loginSchema } = require("../schema/login.schema");
-const { signupSchema } = require("../schema/signup.schema");
-const { validateSchema } = require("../utils/helper");
+const loginRepository = require("../../repository/loginRepository");
+const { loginSchema } = require("../../schema/login.schema");
+const { signupSchema } = require("../../schema/signup.schema");
+const { validateSchema } = require("../../utils/helper");
 
 
 const loginController = {

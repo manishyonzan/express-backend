@@ -2,6 +2,7 @@ const express = require("express");
 
 const app = express();
 const loginRouter = require("./routes/login");
+const orderRouter = require("./routes/order");
 const AppError = require("./utils/appError");
 
 // Middleware to parse URL-encoded bodies
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
     });
 });
 app.use("/test", loginRouter);
+app.use("/order",orderRouter);
 
 
 app.all("*", (req, res, next) => {

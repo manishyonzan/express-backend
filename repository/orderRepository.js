@@ -6,7 +6,7 @@ class orderRepository {
     async getOrders(id) {
         try {
             const response = await pool.query("select * from ordertable where userId=?", [id])
-            return response;
+            return response[0];
         } catch (error) {
             const err = AppError("something went wrong", 401);
             throw err;
