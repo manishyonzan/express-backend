@@ -3,12 +3,17 @@ const { loginSchema } = require("../../schema/login.schema");
 const { signupSchema } = require("../../schema/signup.schema");
 const { validateSchema } = require("../../utils/helper");
 
+const bcrypt = require('bcryptjs');
 
 const loginController = {
     getLogin: async (req, res) => {
         try {
             const response = await loginRepository.getLogin();
             if (response) {
+
+
+                console.log(response);
+
                 res.status(200).send(response);
             }
 
@@ -25,9 +30,14 @@ const loginController = {
             const response = validateSchema(req.body, signupSchema);
             if (response.errors?.hasError) {
                 return res.status(400).send(response.errors.error);
-
             }
-            const returnResponse = await loginRepository.createLogin(response.data);
+
+            let salt = bcrypt.genSaltSync(10);
+            let hash = await bcrypt.hashSync(response.data.password, salt);
+            let sendData = {
+                ...response.data, token: hash
+            }
+            const returnResponse = await loginRepository.createLogin(sendData);
 
             res.status(200)
                 .json({
@@ -42,23 +52,25 @@ const loginController = {
     },
     checklogin: async (req, res, next) => {
         try {
-            const response = validateSchema(req.body, loginSchema);
+            const response = await validateSchema(req.body, loginSchema);
             if (response.errors?.hasError) {
                 return res.status(401).json(response.errors.error);
             }
+            let isValid = false;
             const returnResponse = await loginRepository.checklogin(response.data);
 
-            const transformedData = returnResponse[0].map(item => ({
-                name: item.name,
-                password: item.password,
-                signedDate: item.signedDate,
-            }))
-            return res.status(returnResponse[0].length > 0 ? 200 : 400).json(returnResponse[0].length > 0 ? {
+            const transformedData = {
+                token: returnResponse[0].token,
+            };
+
+            isValid = await bcrypt.compare(response.data.password, returnResponse[0].token);
+
+            return res.status(isValid ? 200 : 400).json(isValid > 0 ? {
                 message: "Successfullly fetched",
                 data: transformedData,
                 error: null,
             } : {
-                message: "NO data found",
+                message: "login with correct credentials",
                 data: []
             });
 

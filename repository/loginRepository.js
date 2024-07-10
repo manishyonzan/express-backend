@@ -17,7 +17,6 @@ class LoginRepository {
         }
     };
     async createLogin(logindata) {
-
         try {
             const query = `
         insert into tablename (${Object.keys(logindata).map(key => `${key}`).join(", ")})
@@ -29,7 +28,7 @@ class LoginRepository {
 
             const response = await pool.query(query, parameters);
 
-            return response;
+            return response[0];
         } catch (error) {
             if (error.code == "ER_DUP_ENTRY") {
                 const err = new AppError(`Data with this id already exist`, 404);
@@ -47,7 +46,7 @@ class LoginRepository {
             const parameters = [data.id];
             const response = await pool.query(query, parameters);
             console.log(response);
-            return response;
+            return response[0];
 
         } catch (error) {
             console.log(error);

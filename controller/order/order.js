@@ -15,7 +15,6 @@ const orderController = {
 
         } catch (error) {
             next(error);
-
         }
     },
 }
