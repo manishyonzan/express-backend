@@ -9,7 +9,7 @@ class orderRepository {
             pool.releaseConnection();
 
             return response[0];
-            
+
         } catch (error) {
             const err = AppError("something went wrong", 401);
             pool.releaseConnection();
@@ -17,7 +17,24 @@ class orderRepository {
 
         }
 
+    };
+    async createOrder(orderData) {
+        try {
+            const query = "insert into ordertable (userID,productId,quantity) values(?,?,?)"
+            const parameters = [orderData.userID, orderData.productId, orderData.quantity]
+            const response = await pool.query(query, parameters);
+
+            if (response) {
+                return response[0];
+            }
+            throw new AppError("Something went wrong");
+        } catch (error) {
+
+            throw err;
+
+        }
     }
+
 }
 
 

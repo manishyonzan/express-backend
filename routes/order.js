@@ -5,5 +5,6 @@ const { getUserFromToken } = require("../middleware/getUserFromToken");
 
 const router = express.Router();
 router.get("/getOrders/:id", getUserFromToken, orderController.getOrder);
+router.get("/createOrder",getUserFromToken,orderController.createOrder);
 
 module.exports = router;  
