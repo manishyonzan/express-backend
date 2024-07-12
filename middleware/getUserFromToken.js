@@ -15,7 +15,8 @@ const getUserFromToken = async (req, res, next) => {
             if (response[0].length < 1) {
                 throw new AppError("Login with correct credentials", 500);
             }
-            req.user = response[0][0].id,
+            req.user = response[0][0],
+            console.log(response[0][0],"the response from the ")
                 next()
         } catch (error) {
             const err = new AppError("something went wrong", 500);

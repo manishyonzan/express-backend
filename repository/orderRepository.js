@@ -5,13 +5,21 @@ const AppError = require("../utils/appError");
 class orderRepository {
     async getOrders(id) {
         try {
-            const response = await pool.query("select * from ordertable where userId=?", [id]);
+            // const response = await pool.query("select productId from ordertable where userId=?", [id]);
+            // console.log("ok")
+            // const getProduct = await pool.query(`select productId,name,image from producttable where productId in ( ${response[0].map((item) => `'${item.productId}'`).join(",")})`);
+            // console.log(getProduct[0], "the gotten product");
+
+            const response = await pool.query(` SELECT p.productId, p.name, p.image FROM producttable p  JOIN ordertable o ON p.productId = o.productId  WHERE o.userId = ?`, [id]);
+
+            console.log(response,"the response")
             pool.releaseConnection();
 
             return response[0];
 
         } catch (error) {
-            const err = AppError("something went wrong", 401);
+            console.log(error)
+            const err = new AppError("something went wrong", 401);
             pool.releaseConnection();
             throw err;
 

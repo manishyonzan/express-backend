@@ -5,7 +5,7 @@ const AppError = require("../../utils/appError");
 const orderController = {
     getOrder: async (req, res, next) => {
         try {
-            const id = req.user;
+            const {id} = req.user;
             console.log(id);
             const response = await orderRepository.getOrders(id);
             if (response) {
@@ -19,7 +19,7 @@ const orderController = {
     },
     createOrder: async (req, res, next) => {
         try {
-            const id = req.user;
+            const { id } = req.user;
             const orderData = {
                 userID: req.user,
                 productId: req.body.productId,
