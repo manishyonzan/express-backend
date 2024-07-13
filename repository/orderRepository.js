@@ -10,7 +10,7 @@ class orderRepository {
             // const getProduct = await pool.query(`select productId,name,image from producttable where productId in ( ${response[0].map((item) => `'${item.productId}'`).join(",")})`);
             // console.log(getProduct[0], "the gotten product");
 
-            const response = await pool.query(` SELECT p.productId, p.name, p.image FROM producttable p  JOIN ordertable o ON p.productId = o.productId  WHERE o.userId = ?`, [id]);
+            const response = await pool.query(` SELECT p.productId, p.name, p.image, o.quantity FROM producttable p  JOIN ordertable o ON p.productId = o.productId  WHERE o.userId = ?`, [id]);
 
             console.log(response,"the response")
             pool.releaseConnection();
