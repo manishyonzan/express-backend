@@ -16,6 +16,22 @@ const productController = {
             next(error);
         }
     },
+    createProduct : async (req,res,next) => {
+        try {
+            const res = await productRepository.createProducts(req.body);
+            if (res){
+                res.status(200).json({
+                    success:true,
+                    data:res,
+                    error:null,
+                    message:"proudcts successfully created"
+                })
+            }
+            throw new AppError("Something went wrong");
+        } catch (error) {
+            next(error)
+        }
+    }
   
 }
 
