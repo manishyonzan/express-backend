@@ -1,18 +1,34 @@
-const { pool } = require("../../database");
+const dotenv = require('dotenv');
+const mysql = require('mysql2/promise');
 
-const createUniqueProductId = async (body, num) => {
+dotenv.config();
 
-    let productId = body.name;
 
-    const response = await pool.query(`select * from producttable where productId =${`${body.productId}`}`);
-    if (response[0].length < 0) {
-        req.body = { ...req.body, productId: productId };
+const pool = mysql.createPool({
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
+});
+
+const createUniqueProductId = async (name, actualname, num) => {
+
+    let productId = name;
+    console.log(productId, "the product id")
+
+    let query = "select * from producttable where productId = ?";
+    let params = [productId]
+    const response = await pool.query(query, params);
+
+    if (response && response[0].length < 1) {
+        console.log(productId, "the reu=turn")
+        return productId;
     }
     else {
 
-        let productId = `${req.body.name.split(" ").join("-")}-${num + 1}`;
-        let body2 = { ...body, productId: productId }
-        createUniqueProductId(body2, num + 1);
+        let productId2 = `${actualname.split(" ").join("-")}-${num + 1}`;
+        console.log(productId2)
+        return createUniqueProductId(productId2, actualname, num + 1);
     }
 
 }
@@ -20,7 +36,9 @@ const createUniqueProductId = async (body, num) => {
 const productService = {
     formatProductService: async (req, res, next) => {
         try {
-            const res  = await createUniqueProductId(req.body,0);
+            const res = await createUniqueProductId(req.body.name, req.body.name, 0);
+            console.log(res, "the response from the function")
+            req.productId = res;
             next();
         } catch (error) {
             next(error)

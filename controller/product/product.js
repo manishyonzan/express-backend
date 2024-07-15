@@ -16,15 +16,17 @@ const productController = {
             next(error);
         }
     },
-    createProduct : async (req,res,next) => {
+    createProduct: async (req, res, next) => {
         try {
-            const res = await productRepository.createProducts(req.body);
-            if (res){
+            console.log(req.productId,"the e")
+            const res = await productRepository.createProducts({ ...req.body, productId: req.productId });
+            if (res) {
+                console.log("lksksksks")
                 res.status(200).json({
-                    success:true,
-                    data:res,
-                    error:null,
-                    message:"proudcts successfully created"
+                    success: true,
+                    data: res,
+                    error: null,
+                    message: "proudcts successfully created"
                 })
             }
             throw new AppError("Something went wrong");
@@ -32,7 +34,7 @@ const productController = {
             next(error)
         }
     }
-  
+
 }
 
 module.exports = productController;
