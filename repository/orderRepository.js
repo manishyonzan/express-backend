@@ -12,7 +12,7 @@ class orderRepository {
 
             const response = await pool.query(` SELECT p.productId, p.name, p.image, o.quantity FROM producttable p  JOIN ordertable o ON p.productId = o.productId  WHERE o.userId = ?`, [id]);
 
-            console.log(response,"the response")
+            console.log(response, "the response")
             pool.releaseConnection();
 
             return response[0];
@@ -40,6 +40,35 @@ class orderRepository {
 
             throw err;
 
+        }
+    };
+    async deleteOrder(userId) {
+        try {
+            const query = "delete from ordertable where userId = ?";
+            const parameters = [userId.toString()];
+            const [response] = await pool.query(query, parameters);
+            console.log(response);
+
+            if (response.affectedRows > 0) return response;
+            throw new AppError("No Order remaining");
+
+        } catch (error) {
+            throw error;
+        }
+    };
+    async removeProductFromOrder(productId, userId) {
+        try {
+            const query = "delete from ordertable where productId = ? and userId = ?";
+            console.log(productId, userId, typeof productId, typeof userId.toString(), "product id and the user id")
+            const parameters = [productId, userId.toString()];
+            const [response] = await pool.query(query, parameters);
+
+            console.log(response, "response form delete", response.affectedRows);
+            if (response.affectedRows > 0) return response;
+            throw new AppError("Product not in the cart");
+
+        } catch (error) {
+            throw error;
         }
     }
 
