@@ -1,0 +1,29 @@
+{
+  "name": "practice",
+  "version": "1.0.0",
+  "description": "practicng the node js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manishyonzan/expressPractice1.git"
+  },
+  "author": "manish lama",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manishyonzan/expressPractice1/issues"
+  },
+  "homepage": "https://github.com/manishyonzan/expressPractice1#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.9.7",
+    "nodemon": "^3.1.0",
+    "zod": "^3.23.8"
+  }
+}
