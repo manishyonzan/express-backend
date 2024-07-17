@@ -12,3 +12,14 @@ const orderSchema = z.object({
     })
         .min(1, { message: `quantity is required` }),
 })
+
+const changeOrderSchema = orderSchema.extend({
+    changeType: z.enum(['increase', "decrease"], {
+        required_error: `changetype is required`,
+        invalid_type_error: "Provide valid type as increase or decrease",
+    })
+}).omit({
+    quantity: true,
+})
+
+module.exports = { changeOrderSchema,orderSchema}

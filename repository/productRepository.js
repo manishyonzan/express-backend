@@ -32,14 +32,31 @@ class ProductRepository {
             insert into producttable (${Object.keys(product).map(key => `${key}`).join(", ")})
             values (${Object.keys(product).map(key => `?`).join(", ")})
         `;
-                const params = [...Object.values(product)];
+            const params = [...Object.values(product)];
 
             const response = await pool.query(query, params);
             if (!response) throw new AppError("product table creation failed");
             return response[0];
 
         } catch (error) {
-            next(error);
+            throw error;
+        }
+    };
+
+    async deleteProduct(productId) {
+        try {
+            const query = "delete from producttable where productId = ?"
+            const parameters = [productId]
+
+            const [response] = await pool.query(query, parameters);
+
+            if (response.affectedRows > 0) return response;
+            if (response.affectedRows < 1) throw new AppError("Product not found");
+
+            throw new AppError()
+
+        } catch (error) {
+            throw error;
         }
     }
 }

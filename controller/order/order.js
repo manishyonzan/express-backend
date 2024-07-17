@@ -1,5 +1,7 @@
 const orderRepository = require("../../repository/orderRepository");
+const { changeOrderSchema } = require("../../schema/order.schema");
 const AppError = require("../../utils/appError");
+const { validateSchema } = require("../../utils/helper");
 
 
 const orderController = {
@@ -21,7 +23,7 @@ const orderController = {
         try {
             const { id } = req.user;
             const orderData = {
-                userID: req.user,
+                userID: id,
                 productId: req.body.productId,
                 quantity: req.body.quantity,
             }
@@ -60,7 +62,7 @@ const orderController = {
             const { id } = req.user;
             const { productId } = req.params;
 
-            const response = await orderRepository.removeProductFromOrder(productId,id);
+            const response = await orderRepository.removeProductFromOrder(productId, id);
             if (response) return res.status(200).json({
                 success: true,
                 message: "item deleted successfully"
@@ -68,6 +70,32 @@ const orderController = {
             throw new AppError();
         } catch (error) {
             next(error)
+        }
+    },
+    changeProductquantity: async (req, res, next) => {
+        try {
+            let checkValue = {
+                productId: req.params.productId,
+                changeType: req.query.changeType,
+            }
+            const validate = validateSchema(checkValue, changeOrderSchema);
+            if (validate.errors?.hasError) {
+                return res.status(400).send(validate.errors.error);
+            }
+            
+            let orderData = {
+                changeType: validate.data.changeType,
+                productId: validate.data.productId,
+                userId: req.user.id,
+            }
+
+            const response = await orderRepository.changeProductQuantity(orderData);
+            if (response) return res.status(200).json({
+                success:true,
+                message:"Update Successfully"
+            });
+        } catch (error) {
+            next(error);
         }
     }
 

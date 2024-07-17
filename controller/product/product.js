@@ -18,7 +18,7 @@ const productController = {
     },
     createProduct: async (req, res, next) => {
         try {
-            console.log(req.productId,"the e")
+            console.log(req.productId, "the e")
             const res = await productRepository.createProducts({ ...req.body, productId: req.productId });
             if (res) {
                 console.log("lksksksks")
@@ -33,7 +33,23 @@ const productController = {
         } catch (error) {
             next(error)
         }
-    }
+    },
+    deleteProduct: async(req, res, next) => {
+        try {
+            const { productId } = req.params;
+
+            const response = await productRepository.deleteProduct(productId);
+
+            if (response) return res.status(200).json({
+                success:true,
+                message:"Product deleted successfully"
+            })
+            throw new AppError();
+
+        } catch (error) {
+            next(error)
+        }
+    },
 
 }
 

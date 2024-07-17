@@ -28,6 +28,7 @@ class orderRepository {
     };
     async createOrder(orderData) {
         try {
+            console.log(orderData, "the order data");
             const query = "insert into ordertable (userID,productId,quantity) values(?,?,?)"
             const parameters = [orderData.userID, orderData.productId, orderData.quantity]
             const response = await pool.query(query, parameters);
@@ -42,6 +43,29 @@ class orderRepository {
 
         }
     };
+    async changeProductQuantity(orderData) {
+        // const query = `UPDATE ordertable SET quantity = quantity ${changeType === "increase" ? "+ 1" : "- 1"} WHERE userID = ? AND productId = ?`;
+        try {
+            const { changeType, userId, productId } = orderData;
+            console.log(orderData,"the order data");
+
+            const query = `update ordertable set quantity = quantity ${changeType =="increase" ? "+ 1" :"- 1"} where userID=? and productId=?`;
+
+            console.log(query,"the query");
+
+            const parameters = [userId.toString(), productId.toString()];
+
+            const [response] = await pool.query(query,parameters);
+
+            console.log(response,"the response");
+
+            if (response.affectedRows > 0) return response;
+            if(response.affectedRows < 1) throw new AppError("Product Not Found");
+            throw new AppError();
+        } catch (error) {
+            throw error;
+        }
+    }
     async deleteOrder(userId) {
         try {
             const query = "delete from ordertable where userId = ?";
