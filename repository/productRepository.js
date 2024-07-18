@@ -1,3 +1,4 @@
+const { object } = require("zod");
 const pool = require("../database");
 const AppError = require("../utils/appError");
 
@@ -54,6 +55,29 @@ class ProductRepository {
             if (response.affectedRows < 1) throw new AppError("Product not found");
 
             throw new AppError()
+
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    async updateProduct(product) {
+        try {
+            let { productId } = product;
+
+            delete product.productId
+
+            console.log(product);
+            const query = `update producttable set ${Object.keys(product).map((key) => `${key}=?`).join(",")} where productId=?`;
+
+            console.log(query);
+            const parameters = [...Object.values(product), productId]
+
+            const [response] = await pool.query(query, parameters);
+
+            if (response.affectedRows > 0) return response;
+            if (response.affectedRows < 1) throw new AppError("Product Not found");
+            throw new AppError();
 
         } catch (error) {
             throw error;
