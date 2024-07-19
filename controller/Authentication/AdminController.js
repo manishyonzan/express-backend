@@ -1,14 +1,17 @@
+const AdminRepository = require("../../repository/Authentication/AdminRepository");
 const loginRepository = require("../../repository/Authentication/loginRepository");
+const { adminSchema, adminLoginSchema } = require("../../schema/admin.schema");
 const { loginSchema } = require("../../schema/login.schema");
 const { signupSchema } = require("../../schema/signup.schema");
+const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");
 
 const bcrypt = require('bcryptjs');
 
-const loginController = {
-    getLogin: async (req, res) => {
+const AdminAuthenticationController = {
+    getLogin: async (req, res,next) => {
         try {
-            const response = await loginRepository.getLogin();
+            const response = await AdminR.getLogin();
             if (response) {
 
 
@@ -18,16 +21,13 @@ const loginController = {
             }
 
         } catch (error) {
-            res.status(error.statusCode).send({
-                message: error.message,
-            })
+           next(error);
 
         }
     },
     createLogin: async (req, res, next) => {
         try {
-
-            const response = validateSchema(req.body, signupSchema);
+            const response = validateSchema(req.body, adminSchema);
             if (response.errors?.hasError) {
                 return res.status(400).send(response.errors.error);
             }
@@ -35,15 +35,19 @@ const loginController = {
             let salt = bcrypt.genSaltSync(10);
             let hash = await bcrypt.hashSync(response.data.password, salt);
             let sendData = {
-                ...response.data, token: hash
+                ...response.data, token: hash, id : Date.now().toString(36)
             }
-            const returnResponse = await loginRepository.createLogin(sendData);
+            delete sendData.password;
+            console.log(sendData);
+            const returnResponse = await AdminRepository.create(sendData);
 
-            res.status(200)
-                .json({
-                    message: "Login created successfully",
-                    success: returnResponse.affectedRows > 0
-                });
+            if (returnResponse) {
+                return res.status(200).json({
+                    message:'Admin created successfully',
+                    success : true,
+                })
+            }
+            throw new AppError("Failed to create Admin");
 
         } catch (error) {
             next(error);
@@ -52,12 +56,14 @@ const loginController = {
     },
     checklogin: async (req, res, next) => {
         try {
-            const response = await validateSchema(req.body, loginSchema);
+            const response = validateSchema(req.body, adminLoginSchema);
             if (response.errors?.hasError) {
                 return res.status(401).json(response.errors.error);
             }
             let isValid = false;
-            const returnResponse = await loginRepository.checklogin(response.data);
+            const returnResponse = await AdminRepository.login(response.data);
+
+            console.log(returnResponse)
 
             const transformedData = {
                 token: returnResponse[0].token,
@@ -82,4 +88,4 @@ const loginController = {
 }
 
 
-module.exports = loginController;
+module.exports = AdminAuthenticationController;

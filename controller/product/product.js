@@ -1,5 +1,5 @@
 
-const productRepository = require("../../repository/productRepository");
+const productRepository = require("../../repository/Product/productRepository");
 const AppError = require("../../utils/appError");
 
 const productController = {

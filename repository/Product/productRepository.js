@@ -1,6 +1,6 @@
-const { object } = require("zod");
-const pool = require("../database");
-const AppError = require("../utils/appError");
+const pool = require("../../database");
+const AppError = require("../../utils/appError");
+
 
 class ProductRepository {
     async getProducts(page) {

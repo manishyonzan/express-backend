@@ -1,8 +1,8 @@
 // const pool = require("../database");
 
 const { response } = require("express");
-const pool = require("../database");
-const AppError = require("../utils/appError");
+const pool = require("../../database");
+const AppError = require("../../utils/appError");
 
 class LoginRepository {
     async getLogin() {
@@ -35,8 +35,7 @@ class LoginRepository {
                 throw err;
 
             }
-            const err = new AppError("something went wrong", 401);
-            throw err;
+            throw error;
         }
     };
 
