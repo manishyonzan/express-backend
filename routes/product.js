@@ -9,6 +9,6 @@ const router = express.Router();
 router.get("/get", productController.getProduct);
 router.post("/create", getAdminFromToken, productService.formatProductService, productController.createProduct)
 router.delete("/delete/:productId", getUserFromToken, productController.deleteProduct);
-router.patch("/update/:productId",productController.updateProduct);
+router.patch("/update/:productId",getAdminFromToken,productController.updateProduct);
 
 module.exports = router;
