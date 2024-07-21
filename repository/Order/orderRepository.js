@@ -25,7 +25,6 @@ class orderRepository {
             throw err;
 
         }
-
     };
     async createOrder(orderData) {
         try {

@@ -1,31 +1,67 @@
 const pool = require("../../database");
 
 class cartRepository {
+
+
     async get(id) {
 
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query, parameters)
+        try {
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
-    async create(wishlist) {
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query, parameters)
+    async create(product) {
+        try {
+
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
-    async update(wishlist){
-        
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query,parameters)
+    async update(product) {
+
+        try {
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
-    async delete(id){
-        
+    async delete(id) {
+
         const query = "";
         const parameters = [];
-        const response = pool.query(query,parameters)
+        const [response] = pool.query(query, parameters);
+
+        if (response) {
+            return response;
+        }
+        throw new AppError();
     }
 }
 

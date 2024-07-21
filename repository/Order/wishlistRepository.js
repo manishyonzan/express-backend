@@ -1,31 +1,66 @@
 const pool = require("../../database");
+const AppError = require("../../utils/appError");
 
 class wishlistRepository {
     async get(id) {
 
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query, parameters)
+        try {
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
     async create(wishlist) {
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query, parameters)
+        try {
+
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
-    async update(wishlist){
-        
-        const query = "";
-        const parameters = [];
-        const response = pool.query(query,parameters)
+    async update(wishlist) {
+
+        try {
+            const query = "";
+            const parameters = [];
+            const [response] = pool.query(query, parameters);
+
+            if (response) {
+                return response;
+            }
+            throw new AppError();
+
+        } catch (error) {
+            throw error
+        }
     };
 
-    async delete(id){
-        
+    async delete(id) {
+
         const query = "";
         const parameters = [];
-        const response = pool.query(query,parameters)
+        const [response] = pool.query(query, parameters);
+
+        if (response) {
+            return response;
+        }
+        throw new AppError();
     }
 }
 
