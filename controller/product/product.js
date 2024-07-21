@@ -1,5 +1,5 @@
 
-const productRepository = require("../../repository/productRepository");
+const productRepository = require("../../repository/Product/productRepository");
 const AppError = require("../../utils/appError");
 
 const productController = {
@@ -34,15 +34,15 @@ const productController = {
             next(error)
         }
     },
-    deleteProduct: async(req, res, next) => {
+    deleteProduct: async (req, res, next) => {
         try {
             const { productId } = req.params;
 
             const response = await productRepository.deleteProduct(productId);
 
             if (response) return res.status(200).json({
-                success:true,
-                message:"Product deleted successfully"
+                success: true,
+                message: "Product deleted successfully"
             })
             throw new AppError();
 
@@ -50,6 +50,36 @@ const productController = {
             next(error)
         }
     },
+    updateProduct: async (req, res, next) => {
+        try {
+            let product = {
+                price: req.body.price,
+                image: req.body.image,
+                name: req.body.name,
+                productId: req.params.productId
+            }
+            let valueToPass = {
+            }
+
+            Object.entries(product).forEach(([key, val]) => {
+                if (val) {
+                    valueToPass[`${key}`] = val
+                }
+            }
+            )
+
+            const response = await productRepository.updateProduct(valueToPass);
+            if (response) return res.status(200).json({
+                message: "product updated successfully",
+                success: true,
+                error: null,
+            })
+            throw new AppError();
+
+        } catch (error) {
+            next(error)
+        }
+    }
 
 }
 

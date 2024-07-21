@@ -7,7 +7,7 @@ const getAdminFromToken = async (req, res, next) => {
         try {
             console.log(token)
             const [authToken, ...rest] = token.split(' ').reverse();
-            const query = `select id FROM admin where token=?`;
+            const query = `select * FROM admin where token=?`;
             const parameters = [authToken]
             const response = await pool.query(query, parameters);
 

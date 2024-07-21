@@ -1,4 +1,5 @@
-const orderRepository = require("../../repository/orderRepository");
+
+const orderRepository = require("../../repository/Order/orderRepository");
 const { changeOrderSchema } = require("../../schema/order.schema");
 const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");

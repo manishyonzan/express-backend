@@ -1,5 +1,6 @@
-const pool = require("../database");
-const AppError = require("../utils/appError");
+
+const pool = require("../../database");
+const AppError = require("../../utils/appError");
 
 
 class orderRepository {
@@ -24,7 +25,6 @@ class orderRepository {
             throw err;
 
         }
-
     };
     async createOrder(orderData) {
         try {

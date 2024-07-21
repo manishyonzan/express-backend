@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
         message: "hello world",
     });
 });
-app.use("/test", loginRouter);
+app.use("/auth", loginRouter);
 app.use("/order",orderRouter);
 app.use("/product",productRouter);
 
