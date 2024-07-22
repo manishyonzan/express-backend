@@ -4,6 +4,7 @@ const app = express();
 const loginRouter = require("./routes/login");
 const orderRouter = require("./routes/order");
 const productRouter = require('./routes/product');
+const reviewRouter = require("./routes/review");
 const AppError = require("./utils/appError");
 
 // Middleware to parse URL-encoded bodies
@@ -17,8 +18,9 @@ app.get("/", (req, res) => {
     });
 });
 app.use("/auth", loginRouter);
-app.use("/order",orderRouter);
-app.use("/product",productRouter);
+app.use("/order", orderRouter);
+app.use("/product", productRouter);
+app.use("/review", reviewRouter);
 
 
 app.all("*", (req, res, next) => {
