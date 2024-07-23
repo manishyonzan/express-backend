@@ -10,5 +10,4 @@ router.post("/login", loginController.checklogin);
 router.post("/admin/create",AdminAuthenticationController.createLogin);
 router.post("/admin/login", AdminAuthenticationController.checklogin);
 
-
 module.exports = router;    
