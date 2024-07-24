@@ -10,6 +10,8 @@ const AppError = require("./utils/appError");
 
 // Middleware to parse URL-encoded bodies
 // app.use(express.urlencoded({ extended: true }));
+
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -22,7 +24,7 @@ app.use("/auth", loginRouter);
 app.use("/order", orderRouter);
 app.use("/product", productRouter);
 app.use("/review", reviewRouter);
-app.use("coupon",couponRouter)
+app.use("coupon",couponRouter);
 
 app.all("*", (req, res, next) => {
     const err = new AppError(`Requested URL ${req.path} not found`, 404);

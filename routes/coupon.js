@@ -10,3 +10,5 @@ router.get("/:id",getAdminFromToken,couponController.getSingleCoupon);
 router.post("/create",getAdminFromToken,couponController.createCoupon);
 router.patch("/update",getAdminFromToken,couponController.updateCoupon);
 router.delete("/delete",getAdminFromToken,couponController.removeCoupon);
+
+module.exports = router;

@@ -3,6 +3,7 @@ const orderRepository = require("../../repository/Order/orderRepository");
 const { changeOrderSchema } = require("../../schema/order.schema");
 const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");
+const SENDMAIL = require("./nodeMailer");
 
 
 const orderController = {
@@ -83,7 +84,7 @@ const orderController = {
             if (validate.errors?.hasError) {
                 return res.status(400).send(validate.errors.error);
             }
-            
+
             let orderData = {
                 changeType: validate.data.changeType,
                 productId: validate.data.productId,
@@ -92,12 +93,31 @@ const orderController = {
 
             const response = await orderRepository.changeProductQuantity(orderData);
             if (response) return res.status(200).json({
-                success:true,
-                message:"Update Successfully"
+                success: true,
+                message: "Update Successfully"
             });
         } catch (error) {
             next(error);
         }
+    },
+    sendMessage: async (req, res, next) => {
+        let mailOptions = {
+            from: process.env.EMAIL,
+            to: 'lmanish931@gmail.com',
+            subject: 'Sending Email using Node.js',
+            text: 'That was easy!'
+        };
+        let i = await SENDMAIL(mailOptions, (info) => {
+            console.log("Email sent successfully");
+            console.log("MESSAGE ID: ", info.messageId);
+        });
+
+        if (i) {
+            return res.status(200).josn({
+                message: "email sent successfully",
+            })
+        }
+
     }
 
 }
