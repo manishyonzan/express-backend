@@ -31,10 +31,10 @@ let mailOptions = {
 // });
 const SENDMAIL = async (mailDetails, callback) => {
     try {
-        const info = await transporter.sendMail(mailDetails)
+        const info = await transporter.sendMail(mailDetails);
         callback(info);
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 };
 

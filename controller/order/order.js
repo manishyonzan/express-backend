@@ -31,11 +31,32 @@ const orderController = {
             }
             const response = await orderRepository.createOrder(orderData);
             if (response) {
-                return res.status(200).json({
-                    success: true,
-                    error: null,
-                    message: "successfully created order"
-                })
+
+                let mailOptions = {
+                    from: "manish lama",
+                    to: process.env.REMAIL,
+                    subject: 'Order Created Successfully',
+                    text: 'Your Product is ordered SuccessFully'
+                };
+                try {
+                    console.log("send email run")
+                    let mailsent = await SENDMAIL(mailOptions, (info) => {
+                        console.log("Email sent successfully");
+                        console.log("MESSAGE ID: ", info.messageId);
+                    });
+
+                    if (mailsent) {
+                        return res.status(200).json({
+                            success: true,
+                            error: null,
+                            message: "successfully created order"
+                        });
+                    }
+                    console.log("it is running")
+                    throw new AppError();
+                } catch (error) {
+                    next(error);
+                }
             }
             throw new AppError("Something went wrong");
 
@@ -92,6 +113,7 @@ const orderController = {
             }
 
             const response = await orderRepository.changeProductQuantity(orderData);
+
             if (response) return res.status(200).json({
                 success: true,
                 message: "Update Successfully"
@@ -101,22 +123,7 @@ const orderController = {
         }
     },
     sendMessage: async (req, res, next) => {
-        let mailOptions = {
-            from: process.env.EMAIL,
-            to: 'lmanish931@gmail.com',
-            subject: 'Sending Email using Node.js',
-            text: 'That was easy!'
-        };
-        let i = await SENDMAIL(mailOptions, (info) => {
-            console.log("Email sent successfully");
-            console.log("MESSAGE ID: ", info.messageId);
-        });
 
-        if (i) {
-            return res.status(200).josn({
-                message: "email sent successfully",
-            })
-        }
 
     }
 

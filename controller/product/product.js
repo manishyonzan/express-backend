@@ -19,8 +19,8 @@ const productController = {
     createProduct: async (req, res, next) => {
         try {
             console.log(req.productId, "the e")
-            const res = await productRepository.createProducts({ ...req.body, productId: req.productId });
-            if (res) {
+            const resp = await productRepository.createProducts({ ...req.body, productId: req.productId });
+            if (resp) {
                 console.log("lksksksks")
                 res.status(200).json({
                     success: true,
