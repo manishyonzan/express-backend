@@ -13,6 +13,7 @@ const signupSchema = z.object({
     name: z.string(),
     password: z.string(),
     signedDate: z.string(),
+    email:z.string(),
 });
 
 

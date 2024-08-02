@@ -19,8 +19,7 @@ const getUserFromToken = async (req, res, next) => {
             console.log(response[0][0],"the response from the ")
                 next()
         } catch (error) {
-            const err = new AppError("something went wrong", 500);
-            next(err);
+            next(error);
         }
     }
     else {

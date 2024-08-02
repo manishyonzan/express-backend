@@ -11,7 +11,7 @@ const bcrypt = require('bcryptjs');
 const AdminAuthenticationController = {
     getLogin: async (req, res,next) => {
         try {
-            const response = await AdminR.getLogin();
+            const response = await AdminRepository.getLogin();
             if (response) {
 
 

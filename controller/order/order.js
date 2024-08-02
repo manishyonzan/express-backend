@@ -3,6 +3,7 @@ const orderRepository = require("../../repository/Order/orderRepository");
 const { changeOrderSchema } = require("../../schema/order.schema");
 const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");
+const SENDMAIL = require("./nodeMailer");
 
 
 const orderController = {
@@ -30,11 +31,32 @@ const orderController = {
             }
             const response = await orderRepository.createOrder(orderData);
             if (response) {
-                return res.status(200).json({
-                    success: true,
-                    error: null,
-                    message: "successfully created order"
-                })
+
+                let mailOptions = {
+                    from: "manish lama",
+                    to: process.env.REMAIL,
+                    subject: 'Order Created Successfully',
+                    text: 'Your Product is ordered SuccessFully'
+                };
+                try {
+                    console.log("send email run")
+                    let mailsent = await SENDMAIL(mailOptions, (info) => {
+                        console.log("Email sent successfully");
+                        console.log("MESSAGE ID: ", info.messageId);
+                    });
+
+                    if (mailsent) {
+                        return res.status(200).json({
+                            success: true,
+                            error: null,
+                            message: "successfully created order"
+                        });
+                    }
+                    console.log("it is running")
+                    throw new AppError();
+                } catch (error) {
+                    next(error);
+                }
             }
             throw new AppError("Something went wrong");
 
@@ -83,7 +105,7 @@ const orderController = {
             if (validate.errors?.hasError) {
                 return res.status(400).send(validate.errors.error);
             }
-            
+
             let orderData = {
                 changeType: validate.data.changeType,
                 productId: validate.data.productId,
@@ -91,13 +113,18 @@ const orderController = {
             }
 
             const response = await orderRepository.changeProductQuantity(orderData);
+
             if (response) return res.status(200).json({
-                success:true,
-                message:"Update Successfully"
+                success: true,
+                message: "Update Successfully"
             });
         } catch (error) {
             next(error);
         }
+    },
+    sendMessage: async (req, res, next) => {
+
+
     }
 
 }
