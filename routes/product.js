@@ -4,7 +4,7 @@ const { getAdminFromToken } = require("../middleware/getAdminFromToken");
 const productService = require("../service/product/productService");
 const { getUserFromToken } = require("../middleware/getUserFromToken");
 const orderController = require("../controller/order/order");
-const rateLimiter = require("../middleware/rateLimitter");
+const { rateLimiter } = require("../middleware/rateLimitter");
 
 const router = express.Router();
 

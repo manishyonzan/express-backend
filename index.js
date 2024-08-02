@@ -7,6 +7,8 @@ const productRouter = require('./routes/product');
 const reviewRouter = require("./routes/review");
 const couponRouter = require("./routes/coupon");
 const AppError = require("./utils/appError");
+const cron = require('node-cron');
+const { resetRateLimits } = require("./middleware/rateLimitter");
 
 // Middleware to parse URL-encoded bodies
 // app.use(express.urlencoded({ extended: true }));
@@ -40,6 +42,11 @@ app.use((err, req, res, next) => {
     })
 })
 
+// cron.schedule('*/1 * * * *',resetRateLimits);
+cron.schedule('*/1 * * * *',()=>{
+    console.log("running", new Date().getSeconds());
+    resetRateLimits();
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {

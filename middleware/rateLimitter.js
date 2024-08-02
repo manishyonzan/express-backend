@@ -1,12 +1,17 @@
-const rateLimits = {};
+let rateLimits = {};
 const MAX_REQUESTS = 5;
 const WINDOW_MS = 15 * 60 * 1000;
+
+const resetRateLimits = () => {
+    rateLimits = {};
+    console.log('running')
+}
 
 const rateLimiter = (req, res, next) => {
     const ip = req.ip;
     const now = Date.now();
 
-    console.log(rateLimits,"the rate limits",ip);
+    console.log(rateLimits, "the rate limits", ip);
 
     if (!rateLimits[ip]) {
         rateLimits[ip] = { requests: 1, startTime: now };
@@ -30,4 +35,7 @@ const rateLimiter = (req, res, next) => {
     next();
 }
 
-module.exports = rateLimiter;
+module.exports = {
+    rateLimiter,
+    resetRateLimits,
+};
