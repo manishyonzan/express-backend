@@ -8,11 +8,13 @@ const CartController = {
     getCart: async (req, res, next) => {
         try {
 
-            const { id } = req.params
+            // const { id } = req.params
+            const { id } = req.user;
             const response = await cartRepository.get(id);
             if (response) {
                 return res.status(200).json({
                     message: "fetched successfully",
+                    data: response,
                     success: true,
                 })
             }
@@ -25,9 +27,19 @@ const CartController = {
     createCart: async (req, res, next) => {
         try {
 
-            const data = req.body
+            let data = req.body;
+            const { id } = req.user;
+            data = { ...data, userId: id }
             const response = await cartRepository.create(data);
-            return response;
+
+            if (response) {
+                return res.status(200).json({
+                    message: "cart created successfully",
+                    data: { ...response, userId: undefined },
+                    success: true,
+                })
+            }
+            throw new AppError();
 
         } catch (error) {
             next(error)

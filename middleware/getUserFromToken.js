@@ -19,6 +19,7 @@ const getUserFromToken = async (req, res, next) => {
             console.log(response[0][0],"the response from the ")
                 next()
         } catch (error) {
+            console.log("error here")
             next(error);
         }
     }

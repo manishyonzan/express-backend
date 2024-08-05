@@ -6,6 +6,7 @@ const orderRouter = require("./routes/order");
 const productRouter = require('./routes/product');
 const reviewRouter = require("./routes/review");
 const couponRouter = require("./routes/coupon");
+const cartRouter = require('./routes/cart');
 const AppError = require("./utils/appError");
 const cron = require('node-cron');
 const { resetRateLimits } = require("./middleware/rateLimitter");
@@ -15,6 +16,7 @@ const { resetRateLimits } = require("./middleware/rateLimitter");
 
 
 app.use(express.json());
+app.use(express.json({ limit: '10kb' })); 
 
 app.get("/", (req, res) => {
 
@@ -26,7 +28,8 @@ app.use("/auth", loginRouter);
 app.use("/order", orderRouter);
 app.use("/product", productRouter);
 app.use("/review", reviewRouter);
-app.use("coupon",couponRouter);
+app.use("/coupon",couponRouter);
+app.use("/cart",cartRouter);
 
 app.all("*", (req, res, next) => {
     const err = new AppError(`Requested URL ${req.path} not found`, 404);

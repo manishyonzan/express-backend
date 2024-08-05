@@ -6,15 +6,18 @@ class cartRepository {
     async get(id) {
 
         try {
-            const query = "";
-            const parameters = [];
-            const [response] = pool.query(query, parameters);
+            const query = "select productId,quantity,image,productName,createdAt,updatedAt from cart where userId=?";
+            const parameters = [id];
+            console.log("kddj")
+            const response = await pool.query(query, parameters);
+            console.log(response)
             if (response) {
-                return response;
+                return response[0];
             }
             throw new AppError();
 
         } catch (error) {
+            console.log(error)
             throw error
         }
     };
@@ -22,11 +25,14 @@ class cartRepository {
     async create(product) {
         try {
 
-            const query = "";
-            const parameters = [];
-            const [response] = pool.query(query, parameters);
+            const query = `insert into cart (${Object.keys(product).map((item) => `${item}`).join(",")})  
+             values (${Object.keys(product).map((item) => `?`).join(",")})`;
+
+            const parameters = [...Object.values(product)];
+            const response = await pool.query(query, parameters);
+
             if (response) {
-                return response;
+                return product;
             }
             throw new AppError();
 

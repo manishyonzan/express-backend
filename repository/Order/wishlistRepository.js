@@ -5,7 +5,7 @@ class wishlistRepository {
     async get(id) {
 
         try {
-            const query = "";
+            const query = "select * from wishlist where userID";
             const parameters = [];
             const [response] = pool.query(query, parameters);
             if (response) {
@@ -21,8 +21,10 @@ class wishlistRepository {
     async create(wishlist) {
         try {
 
-            const query = "";
-            const parameters = [];
+            const query = `insert into wishlist (${Object.keys(wishlist).map((item)=> `${item}`).join(",")}) 
+            values (${Object.keys(wishlist).map((item) => `?`).join(",")})
+            `;
+            const parameters = [...Object.values(wishlist)];
             const [response] = pool.query(query, parameters);
             if (response) {
                 return response;

@@ -8,6 +8,9 @@ const resetRateLimits = () => {
 }
 
 const rateLimiter = (req, res, next) => {
+
+    const userAgent = req.headers['user-agent'];
+    
     const ip = req.ip;
     const now = Date.now();
 
