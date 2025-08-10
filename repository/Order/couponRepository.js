@@ -4,12 +4,22 @@ const AppError = require("../../utils/appError");
 class couponRepository {
     async getCoupon() {
         try {
-            const query = ``;
-            const params = [];
-            const response = await pool.query(query, params);
-            if (response[0].length > 0) {
+            console.log("run");
+            const query = `select * from coupon`;
+            // const params = [];
+            const response = await pool.query(query);
+            console.log(response)
+            // if (response[0].length > 0) {
+            //     return response[0];
+            // }
+
+            if (Array.isArray(response[0])) {
+                if (response[0].length === 0) {
+                    return response[0];
+                }
                 return response[0];
             }
+
             throw new AppError();
         } catch (error) {
             throw error
@@ -18,8 +28,8 @@ class couponRepository {
 
     async getSingleCoupon(id) {
         try {
-            const query = ``;
-            const params = [];
+            const query = `select productID, code, amount, startDate,endDate from coupon where code=?`;
+            const params = [id];
             const response = await pool.query(query, params);
             if (response[0].length > 0) {
                 return response[0];
@@ -32,8 +42,17 @@ class couponRepository {
     };
     async createCoupon(coupon) {
         try {
-            const query = ``;
-            const params = [];
+            let create_coupon = {
+                productID: coupon.productID,
+                code: coupon.code,
+                quantity: coupon.quantity,
+                amount: coupon.amount,
+                startDate: coupon.startDate,
+                endDate: coupon.endDate
+            }
+            const query = `insert into coupon (productID, code,quantity, amount, startDate,endDate) values  (${Object.keys(create_coupon).map(key => `?`).join(", ")})`;
+            const params = [...Object.values(create_coupon)];
+
             const response = await pool.query(query, params);
             if (response[0].length > 0) {
                 return response[0];
@@ -46,9 +65,10 @@ class couponRepository {
     async deleteCoupon(id) {
         try {
 
-            const query = ``;
-            const params = [];
+            const query = `delete from coupon where code=?`;
+            const params = [id];
             const response = await pool.query(query, params);
+
             if (response[0].affectedRows > 0) {
                 return response[0];
             }
@@ -59,8 +79,13 @@ class couponRepository {
     }
     async updateCoupon(coupon) {
         try {
-            const query = ``;
-            const params = [];
+            let updateid = coupon.code;
+
+
+            const query = `update coupon set ${Object.keys(coupon).map((key) => `${key}=?`).join(",")} where code=?`;
+            const params = [...Object.values(coupon), updateid];
+
+
             const response = await pool.query(query, params);
             if (response[0].affectedRows > 0) {
                 return response[0];

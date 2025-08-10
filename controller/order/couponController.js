@@ -11,6 +11,7 @@ const couponController = {
                 return res.status(200).json({
                     message: "fetched successfully",
                     success: true,
+                    data:response
                 })
             }
             throw new AppError();
