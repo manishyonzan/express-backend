@@ -10,10 +10,12 @@ const orderController = {
     getOrder: async (req, res, next) => {
         try {
             const { id } = req.user;
-            console.log(id);
+
+            // console.log(id,"the id");
+
             const response = await orderRepository.getOrders(id);
             if (response) {
-                res.status(200).send({ success: true, data: response, error: null });
+                return res.status(200).send({ success: true, data: response, error: null });
             }
             throw new AppError("Something Went wrong", 401);
 

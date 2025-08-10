@@ -5,6 +5,17 @@ const { validateSchema } = require("../../utils/helper");
 
 const bcrypt = require('bcryptjs');
 
+const jwt = require('jsonwebtoken');
+
+
+
+function toMySQLDateLocal(date) {
+    const pad = n => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+        `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+
 const loginController = {
     getLogin: async (req, res) => {
         try {
@@ -27,7 +38,15 @@ const loginController = {
     createLogin: async (req, res, next) => {
         try {
 
-            const response = validateSchema(req.body, signupSchema);
+            let data = {
+                id: req.body.id,
+                name: req.body.name,
+                password: req.body.password,
+                signedDate: toMySQLDateLocal(new Date()),
+                email: req.body.email
+            }
+
+            const response = validateSchema(data, signupSchema);
             if (response.errors?.hasError) {
                 return res.status(400).send(response.errors.error);
             }
@@ -59,8 +78,18 @@ const loginController = {
             let isValid = false;
             const returnResponse = await loginRepository.checklogin(response.data);
 
+
+            const jwt = require('jsonwebtoken');
+
+            const token = jwt.sign(
+                { userId: req.body.id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+
             const transformedData = {
-                token: returnResponse[0].token,
+                token: token,
             };
 
             isValid = await bcrypt.compare(response.data.password, returnResponse[0].token);

@@ -26,7 +26,12 @@ class LoginRepository {
             const parameters = [...Object.values(logindata)];
             console.log(parameters)
 
+            console.log("running")
+
             const response = await pool.query(query, parameters);
+
+            console.log("running 2")
+
 
             return response[0];
         } catch (error) {
@@ -44,7 +49,6 @@ class LoginRepository {
             const query = `select * from tablename where id=?`;
             const parameters = [data.id];
             const response = await pool.query(query, parameters);
-            console.log(response);
             return response[0];
 
         } catch (error) {

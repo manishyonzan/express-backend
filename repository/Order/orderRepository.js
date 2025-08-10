@@ -13,7 +13,7 @@ class orderRepository {
 
             const response = await pool.query(` SELECT p.productId, p.name, p.image, o.quantity FROM producttable p  JOIN ordertable o ON p.productId = o.productId  WHERE o.userId = ?`, [id]);
 
-            console.log(response, "the response")
+            // console.log(response, "the response")
             pool.releaseConnection();
 
             return response[0];
@@ -32,6 +32,9 @@ class orderRepository {
             const query = "insert into ordertable (userID,productId,quantity) values(?,?,?)"
             const parameters = [orderData.userID, orderData.productId, orderData.quantity]
             const response = await pool.query(query, parameters);
+
+            pool.releaseConnection();
+
 
             if (response) {
                 return response[0];
@@ -56,6 +59,9 @@ class orderRepository {
             const parameters = [userId.toString(), productId.toString()];
 
             const [response] = await pool.query(query,parameters);
+
+            pool.releaseConnection();
+
 
             console.log(response,"the response");
 

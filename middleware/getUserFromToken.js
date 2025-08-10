@@ -1,5 +1,6 @@
 const pool = require("../database");
 const AppError = require("../utils/appError");
+const jwt = require("jsonwebtoken")
 
 const getUserFromToken = async (req, res, next) => {
     const token = req.header("authorization");
@@ -7,17 +8,25 @@ const getUserFromToken = async (req, res, next) => {
         try {
             console.log(token)
             const [authToken, ...rest] = token.split(' ').reverse();
-            const query = `select id FROM tablename where token=?`;
-            const parameters = [authToken]
-            const response = await pool.query(query, parameters);
 
 
-            if (response[0].length < 1) {
-                throw new AppError("Login with correct credentials", 500);
+            const decoded = await jwt.verify(authToken, process.env.JWT_SECRET);
+
+            console.log(decoded)
+
+
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            if (decoded.exp < currentTime) {
+                throw new AppError("Expired", 500);
             }
-            req.user = response[0][0],
-            console.log(response[0][0],"the response from the ")
-                next()
+
+            req.user = {
+                id: decoded.userId
+            };
+            // console.log(decoded.userId, "the response from the ")
+
+            next()
         } catch (error) {
             console.log("error here")
             next(error);
