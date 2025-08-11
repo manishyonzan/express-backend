@@ -11,6 +11,11 @@ const orderSchema = z.object({
         invalid_type_error: "Provide valid type",
     })
         .min(1, { message: `quantity is required` }),
+    userId: z.string({
+        required_error: "user is required",
+        invalid_type_error: "Provide valid type",
+    }).min(1, { message: `user is required` }),
+    stage: z.enum(["ordered", "cancelled", "pending", "completed"])
 })
 
 const changeOrderSchema = orderSchema.extend({
@@ -22,4 +27,4 @@ const changeOrderSchema = orderSchema.extend({
     quantity: true,
 })
 
-module.exports = { changeOrderSchema,orderSchema}
+module.exports = { changeOrderSchema, orderSchema }

@@ -29,7 +29,7 @@ class orderRepository {
     async createOrder(orderData) {
         try {
             console.log(orderData, "the order data");
-            const query = "insert into ordertable (userID,productId,quantity) values(?,?,?)"
+            const query = "insert into ordertable (userID,productId,quantity,stage) values(?,?,?,'ordered')"
             const parameters = [orderData.userID, orderData.productId, orderData.quantity]
             const response = await pool.query(query, parameters);
 
