@@ -1,6 +1,7 @@
 
 const orderRepository = require("../../repository/Order/orderRepository");
 const { changeOrderSchema, orderSchema } = require("../../schema/order.schema");
+const { orderProductArraySchema } = require("../../schema/product.schema");
 const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");
 const SENDMAIL = require("./nodeMailer");
@@ -28,10 +29,11 @@ const orderController = {
             const { id } = req.user;
             const orderData = {
                 userID: id,
-                productId: req.body.productId,
                 quantity: req.body.quantity,
-                stage: req.body.stage
+                price_at_order: req.body.price_at_order
             }
+
+            const orderItems = req.body.orderItems;
 
 
 
@@ -39,6 +41,14 @@ const orderController = {
 
             if (!validationSchema) {
                 return res.status(400).send(response.errors.error);
+            }
+
+
+            // checking order items validation
+            const orderItemsValidate = validateSchema(orderItems, orderProductArraySchema);
+
+            if (!orderItemsValidate) {
+                return res.status(400).send(response.errors.error)
             }
 
             const response = await orderRepository.createOrder(orderData);

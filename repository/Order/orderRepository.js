@@ -27,11 +27,32 @@ class orderRepository {
         }
     };
     async createOrder(orderData) {
+
+        let items = orderData.items
+        await pool.query("BEGIN");
         try {
+            
             console.log(orderData, "the order data");
-            const query = "insert into ordertable (userID,productId,quantity,stage) values(?,?,?,'ordered')"
-            const parameters = [orderData.userID, orderData.productId, orderData.quantity]
+
+            const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?) returning id"
+            const parameters = [orderData.userID, orderData.quantity, orderData.price_at_order]
             const response = await pool.query(query, parameters);
+
+
+            const orderId = response.rows[0].id;
+
+
+            for (const item of items) {
+                await pool.query(
+                    "INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ($1, $2, $3, $4)",
+                    [orderId, item.productId, item.quantity, item.price_at_order]
+                );
+            }
+
+
+
+            await pool.query("COMMIT");
+
 
             pool.releaseConnection();
 
@@ -40,7 +61,9 @@ class orderRepository {
                 return response[0];
             }
             throw new AppError("Something went wrong");
+
         } catch (error) {
+            await pool.query("ROLLBACK");
 
             throw err;
 
@@ -50,23 +73,23 @@ class orderRepository {
         // const query = `UPDATE ordertable SET quantity = quantity ${changeType === "increase" ? "+ 1" : "- 1"} WHERE userID = ? AND productId = ?`;
         try {
             const { changeType, userId, productId } = orderData;
-            console.log(orderData,"the order data");
+            console.log(orderData, "the order data");
 
-            const query = `update ordertable set quantity = quantity ${changeType =="increase" ? "+ 1" :"- 1"} where userID=? and productId=?`;
+            const query = `update ordertable set quantity = quantity ${changeType == "increase" ? "+ 1" : "- 1"} where userID=? and productId=?`;
 
-            console.log(query,"the query");
+            console.log(query, "the query");
 
             const parameters = [userId.toString(), productId.toString()];
 
-            const [response] = await pool.query(query,parameters);
+            const [response] = await pool.query(query, parameters);
 
             pool.releaseConnection();
 
 
-            console.log(response,"the response");
+            console.log(response, "the response");
 
             if (response.affectedRows > 0) return response;
-            if(response.affectedRows < 1) throw new AppError("Product Not Found");
+            if (response.affectedRows < 1) throw new AppError("Product Not Found");
             throw new AppError();
         } catch (error) {
             throw error;
@@ -102,17 +125,17 @@ class orderRepository {
         }
     };
 
-    async changeOrderStage(stage){
+    async changeOrderStage(stage) {
         try {
             const query = `update ordertable set stage=? where `;
-            const parameters = [stage, ]
+            const parameters = [stage,]
 
-            const [response] = await pool.query(query,parameters);
+            const [response] = await pool.query(query, parameters);
 
             if (response.affectedRows > 0) return response
 
             throw new AppError("No order found");
-            
+
         } catch (error) {
             throw error
         }
