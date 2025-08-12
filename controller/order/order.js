@@ -1,6 +1,6 @@
 
 const orderRepository = require("../../repository/Order/orderRepository");
-const { changeOrderSchema } = require("../../schema/order.schema");
+const { changeOrderSchema, orderSchema } = require("../../schema/order.schema");
 const AppError = require("../../utils/appError");
 const { validateSchema } = require("../../utils/helper");
 const SENDMAIL = require("./nodeMailer");
@@ -30,7 +30,17 @@ const orderController = {
                 userID: id,
                 productId: req.body.productId,
                 quantity: req.body.quantity,
+                stage: req.body.stage
             }
+
+
+
+            const validationSchema = validateSchema(orderData, orderSchema);
+
+            if (!validationSchema) {
+                return res.status(400).send(response.errors.error);
+            }
+
             const response = await orderRepository.createOrder(orderData);
             if (response) {
 
@@ -127,6 +137,21 @@ const orderController = {
     sendMessage: async (req, res, next) => {
 
 
+    },
+    changeOrderStage: async (req, res, next) => {
+        try {
+            let userId = req.user.id;
+            let productId = req.body.productId;
+
+            // let response = await orderRepository.changeProductQuantity
+            return res.status(200).json({
+                success: true,
+                message: "Updated Successfully"
+            })
+
+        } catch (error) {
+            next(error)
+        }
     }
 
 }

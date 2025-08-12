@@ -100,6 +100,22 @@ class orderRepository {
         } catch (error) {
             throw error;
         }
+    };
+
+    async changeOrderStage(stage){
+        try {
+            const query = `update ordertable set stage=? where `;
+            const parameters = [stage, ]
+
+            const [response] = await pool.query(query,parameters);
+
+            if (response.affectedRows > 0) return response
+
+            throw new AppError("No order found");
+            
+        } catch (error) {
+            throw error
+        }
     }
 
 }
