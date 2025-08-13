@@ -15,7 +15,9 @@ const orderSchema = z.object({
         required_error: "user is required",
         invalid_type_error: "Provide valid type",
     }).min(1, { message: `user is required` }),
-    stage: z.enum(["ordered", "cancelled", "pending", "completed"])
+    stage: z.enum(["ordered", "cancelled", "pending", "completed"]),
+
+    orderItems: z.array(z.string())
 })
 
 const changeOrderSchema = orderSchema.extend({
@@ -27,6 +29,29 @@ const changeOrderSchema = orderSchema.extend({
     quantity: true,
 })
 
-    
 
-module.exports = { changeOrderSchema, orderSchema }
+
+const orderItemsSchema = z.object({
+    order_id: z.string({
+        required_error: "Order id is required",
+        invalid_type_error: "Provide valid type"
+    }).min(1, { message: "Order id is required" }),
+
+    product_id: z.string({
+        required_error: "product id is required",
+        invalid_type_error: "Provide valid type"
+    }).min(1, { message: "Product id is required" }),
+
+    quantity: z.number({
+        required_error: "quantity is required",
+        invalid_type_error: "Provide valid type"
+    }).min(1, { message: "quantity is required" }),
+
+    price_at_order: z.string({
+        required_error: "quantity is required",
+        invalid_type_error: "Provide valid type"
+    }).min(1, { message: "Order id is required" }),
+})
+
+
+module.exports = { changeOrderSchema, orderSchema, orderItemsSchema }

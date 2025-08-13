@@ -1,4 +1,3 @@
-
 const pool = require("../../database");
 const AppError = require("../../utils/appError");
 
@@ -28,24 +27,26 @@ class orderRepository {
     };
     async createOrder(orderData) {
 
-        let items = orderData.items
-        await pool.query("BEGIN");
-        try {
-            
-            console.log(orderData, "the order data");
+        let items = orderData.orderItems;
 
-            const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?) returning id"
+        console.log("running in the repository", items, orderData)
+
+        await pool.query("BEGIN");
+
+
+        try {
+            const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?)"
             const parameters = [orderData.userID, orderData.quantity, orderData.price_at_order]
             const response = await pool.query(query, parameters);
 
+            const orderId = response[0].insertId;
 
-            const orderId = response.rows[0].id;
 
 
             for (const item of items) {
                 await pool.query(
-                    "INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ($1, $2, $3, $4)",
-                    [orderId, item.productId, item.quantity, item.price_at_order]
+                    "INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES (?, ?, ?, ?)",
+                    [orderId, item.productId, item.quantity, item.price]
                 );
             }
 
@@ -58,14 +59,14 @@ class orderRepository {
 
 
             if (response) {
-                return response[0];
+                return response[0].insertId;
             }
             throw new AppError("Something went wrong");
 
         } catch (error) {
             await pool.query("ROLLBACK");
 
-            throw err;
+            throw error;
 
         }
     };
