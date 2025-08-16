@@ -1,4 +1,5 @@
 
+const { array } = require("zod");
 const pool = require("../../database");
 const AppError = require("../../utils/appError");
 
@@ -31,23 +32,44 @@ class orderRepository {
         let items = orderData.items
         await pool.query("BEGIN");
         try {
-            
-            console.log(orderData, "the order data");
 
-            const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?) returning id"
+
+            const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?)"
             const parameters = [orderData.userID, orderData.quantity, orderData.price_at_order]
             const response = await pool.query(query, parameters);
 
 
-            const orderId = response.rows[0].id;
+            const orderId = response[0].insertId
 
 
-            for (const item of items) {
-                await pool.query(
-                    "INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ($1, $2, $3, $4)",
-                    [orderId, item.productId, item.quantity, item.price_at_order]
-                );
+
+
+
+            let sql_values = ``
+            let items_to_pass = []
+
+            for (let index = 0; index < items.length; index++) {
+                if(index<items.length - 1){
+                    sql_values += `(?,?,?,?),`
+                }
+                else {
+                    sql_values+=`(?,?,?,?)`
+                }
+
+                items_to_pass = [...items_to_pass, orderId, items[index].productId, items[index].quantity, items[index].price_at_order]
+                
             }
+            
+
+
+            let query_modified = `INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ${sql_values}`
+
+            
+            await pool.query(
+                query_modified,
+                items_to_pass
+            );
+
 
 
 
@@ -65,7 +87,7 @@ class orderRepository {
         } catch (error) {
             await pool.query("ROLLBACK");
 
-            throw err;
+            throw error;
 
         }
     };

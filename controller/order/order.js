@@ -26,11 +26,13 @@ const orderController = {
     },
     createOrder: async (req, res, next) => {
         try {
-            const { id } = req.user;
+            // const { id } = req.user;
+            const id = 12345
             const orderData = {
                 userID: id,
                 quantity: req.body.quantity,
-                price_at_order: req.body.price_at_order
+                price_at_order: req.body.price_at_order,
+                items:req.body.orderItems
             }
 
             const orderItems = req.body.orderItems;
