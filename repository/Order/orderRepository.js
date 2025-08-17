@@ -35,20 +35,44 @@ class orderRepository {
 
 
         try {
+
+
             const query = "insert into ordertable (userId, quantity, price_at_order) values(?,?,?)"
             const parameters = [orderData.userID, orderData.quantity, orderData.price_at_order]
             const response = await pool.query(query, parameters);
 
-            const orderId = response[0].insertId;
+
+            const orderId = response[0].insertId
 
 
 
-            for (const item of items) {
-                await pool.query(
-                    "INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES (?, ?, ?, ?)",
-                    [orderId, item.productId, item.quantity, item.price]
-                );
+
+
+            let sql_values = ``
+            let items_to_pass = []
+
+            for (let index = 0; index < items.length; index++) {
+                if(index<items.length - 1){
+                    sql_values += `(?,?,?,?),`
+                }
+                else {
+                    sql_values+=`(?,?,?,?)`
+                }
+
+                items_to_pass = [...items_to_pass, orderId, items[index].productId, items[index].quantity, items[index].price_at_order]
+                
             }
+            
+
+
+            let query_modified = `INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ${sql_values}`
+
+            
+            await pool.query(
+                query_modified,
+                items_to_pass
+            );
+
 
 
 
