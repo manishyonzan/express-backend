@@ -7,6 +7,7 @@ const productRouter = require('./routes/product');
 const reviewRouter = require("./routes/review");
 const couponRouter = require("./routes/coupon");
 const cartRouter = require('./routes/cart');
+const fileRouter = require('./routes/file');
 const AppError = require("./utils/appError");
 const cron = require('node-cron');
 const { resetRateLimits } = require("./middleware/rateLimitter");
@@ -30,6 +31,7 @@ app.use("/product", productRouter);
 app.use("/review", reviewRouter);
 app.use("/coupon",couponRouter);
 app.use("/cart",cartRouter);
+app.use('/file', fileRouter)
 
 app.all("*", (req, res, next) => {
     const err = new AppError(`Requested URL ${req.path} not found`, 404);

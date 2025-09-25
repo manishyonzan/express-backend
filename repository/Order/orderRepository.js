@@ -59,7 +59,7 @@ class orderRepository {
                     sql_values+=`(?,?,?,?)`
                 }
 
-                items_to_pass = [...items_to_pass, orderId, items[index].productId, items[index].quantity, items[index].price_at_order]
+                items_to_pass = [...items_to_pass, orderId, items[index].product_id, items[index].quantity, items[index].price_at_order]
                 
             }
             

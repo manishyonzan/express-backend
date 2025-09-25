@@ -53,8 +53,8 @@ const orderController = {
             const secondMap = new Map(response[0].map(item => [item.productId, item.price]));
 
             orderItems = req.body.orderItems.map(item => ({
-                id: item.id,
-                price: secondMap.get(item.id) ?? 0,
+                product_id: item.id,
+                price_at_order: secondMap.get(item.id) ?? 0,
                 quantity: item.quantity
             }));
 
