@@ -5,9 +5,11 @@ const pool = require("../../database");
 const AppError = require("../../utils/appError");
 
 class LoginRepository {
-    async getLogin() {
+    async getLogin(limit=10, offset=0) {
         try {
-            const response = await pool.query('select * FROM tablename');
+            const query = 'select * FROM tablename limit ? offset ?';
+            const parameters = [limit, offset];
+            const response = await pool.query(query, parameters);
             return response[0];
 
         } catch (error) {

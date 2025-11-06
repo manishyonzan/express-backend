@@ -11,4 +11,7 @@ router.delete("/deleteOrder", getUserFromToken, orderController.deleteOrder);
 router.delete("/removeProduct/:productId", getUserFromToken, orderController.removeProductFromOrder);
 router.patch("/changeproduct/:productId",getUserFromToken,orderController.changeProductquantity);
 
+// to do
+// need to move or remove after order is complete
+
 module.exports = router;

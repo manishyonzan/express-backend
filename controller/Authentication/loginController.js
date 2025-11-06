@@ -19,7 +19,8 @@ function toMySQLDateLocal(date) {
 const loginController = {
     getLogin: async (req, res) => {
         try {
-            const response = await loginRepository.getLogin();
+            let { limit, offset } = req.query;
+            const response = await loginRepository.getLogin(limit?+limit:10, offset?+offset:0);
             if (response) {
 
 
@@ -29,6 +30,7 @@ const loginController = {
             }
 
         } catch (error) {
+            console.log(error, "the error");
             res.status(error.statusCode).send({
                 message: error.message,
             })

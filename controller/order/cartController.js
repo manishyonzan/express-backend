@@ -1,6 +1,8 @@
 
 const cartRepository = require("../../repository/Order/cartRepository");
+const { cartUpdateSchema } = require("../../schema/cart.schema");
 const AppError = require("../../utils/appError");
+const { validateSchema } = require("../../utils/helper");
 
 
 
@@ -47,7 +49,7 @@ const CartController = {
     },
     removeCart: async (req, res, next) => {
         try {
-            const { id } = req.params;
+            const { productId} = req.params;
             const response = await cartRepository.delete(id);
             if (response) {
                 return res.status(200).json({
@@ -64,9 +66,22 @@ const CartController = {
     },
     updateCart: async (req, res, next) => {
         try {
-            const { id } = req.params;
-            let data = req.body;
-            const response = await cartRepository.update(data);
+            const { productId} = req.params;
+            const { direction } = req.query;
+            const cartUpdateData = { productId:productId, userId: req.user.id, direction: direction };
+
+            const validateCartUpdateSchema = validateSchema(cartUpdateData, cartUpdateSchema);
+
+              if (!validateCartUpdateSchema) {
+                return res.status(400).send(response.errors.error);
+            }
+            // checking if product exist for the user in the cart
+
+            const cartExist = await cartRepository.checkItemFOrUser(req.user.id, productId);
+            if (!cartExist){
+                return res.status(400).send("Item do not exist.");
+            }
+            const response = await cartRepository.update(req.user.id, id, direction);
 
             if (response) {
                 return res.status(200).json({

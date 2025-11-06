@@ -41,11 +41,11 @@ class cartRepository {
         }
     };
 
-    async update(product) {
+    async update(userId, productId, changeType) {
 
         try {
-            const query = "";
-            const parameters = [];
+            const query = `update cart set quantity = quantity ${changeType == "increase" ? "+ 1" : "- 1"} where userID=? and productId=?`;
+            const parameters = [userId, productId];
             const [response] = pool.query(query, parameters);
 
             if (response) {
@@ -58,16 +58,32 @@ class cartRepository {
         }
     };
 
-    async delete(id) {
+    async delete(userId, productId) {
 
-        const query = "";
-        const parameters = [];
+        const query = "delete from cart where userId=? and productId=?";
+        const parameters = [userId, productId];
         const [response] = pool.query(query, parameters);
 
         if (response) {
             return response;
         }
         throw new AppError();
+    }
+    async checkItemFOrUser(userId, productId) {
+        try {
+            const query = "select * from cart where userId=? and productId=? and quantity > 1"
+            const parameters = [userId, productId];
+
+            const response = pool.query(query, parameters);
+
+            if (response) {
+                return response[0];
+            }
+            throw new AppError();
+        } catch (error) {
+            throw error;
+        }
+
     }
 }
 

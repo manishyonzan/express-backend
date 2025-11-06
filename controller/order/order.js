@@ -82,7 +82,7 @@ const orderController = {
             const validationSchema = validateSchema(orderData, orderSchema);
 
             if (!validationSchema) {
-                return res.status(400).send(response.errors.error);
+                return res.status(400).send(validationSchema.errors.error);
             }
 
 
